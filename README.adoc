@@ -1,54 +1,80 @@
-= Request validation Policy
+= Assign Content Policy
 
 ifdef::env-github[]
-image:https://ci.gravitee.io/buildStatus/icon?job=gravitee-io/gravitee-policy-request-validation/master["Build status", link="https://ci.gravitee.io/buildStatus/icon?job=gravitee-io/gravitee-policy-request-validation/master/"]
+image:https://ci.gravitee.io/buildStatus/icon?job=gravitee-io/gravitee-policy-assign-content/master["Build status", link="https://ci.gravitee.io/buildStatus/icon?job=gravitee-io/gravitee-policy-assign-content/master/"]
 image:https://badges.gitter.im/Join Chat.svg["Gitter", link="https://gitter.im/gravitee-io/gravitee-io?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
 endif::[]
 
 == Phase
 
-[cols="2*", options="header"]
+[cols="^2,^2,^2,^2",options="header"]
 |===
-^|onRequest
-^|onResponse
+|onRequest|onResponse|onRequestContent|onResponseContent
 
-^.^| X
-^.^|
+|-
+|-
+|X
+|X
 
 |===
 
 == Description
 
-The `request validation` policy is used to validate the incoming HTTP request according to given rules.
-A rule is defined for an input value. This input value supports EL expression and is validated against to constraint
-rules.
+The `assign content` policy is used to change and / or transform the content of the request body or response body.
 
-Constraint rules can be:
+This policy is compatible with https://freemarker.apache.org[Freemarker] template engine which allows you to apply
+complex transformation like moving from XML to JSON and vice-versa.
 
-* NOT_NULL: Input value is required
-* MIN: Input value is a number and its value is greater or equals to a given parameter.
-* MAX: Input value is a number and its value is lower or equals to a given parameter.
-* MAIL: Input value is valid according to the mail pattern.
-* PATTERN: Input value is valid according to the pattern given as a parameter.
-* SIZE: Input value length is between two given parameters.
+[source, json]
+.Incoming request body content
+----
+{
+  "symbol": "EUR"
+}
+----
 
-By default, if one of the rule can not be validated, the policy returns a `400` status code.
+[source, xml]
+.Policy example to transform from json to xml
+----
+<#assign body = request.content?eval >
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://www.webserviceX.NET/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:GetQuote>
+         ${body.symbol}
+      </web:GetQuote>
+   </soapenv:Body>
+</soapenv:Envelope>
+----
+
+[source, xml]
+.Expected output
+----
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://www.webserviceX.NET/">
+ <soapenv:Header/>
+ <soapenv:Body>
+ <web:GetQuote>
+ EUR
+ </web:GetQuote>
+ </soapenv:Body>
+</soapenv:Envelope>
+----
 
 == Configuration
 
 |===
 |Property |Required |Description |Type |Default
 
-.^|status
+.^|scope
 ^.^|X
-|HTTP Status Code send to the consumer in case of validation issues
-^.^|HTTP status code
-^.^|400
+|The scope for which the policy must be executed.
+^.^|scope
+^.^|REQUEST
 
-.^|rules
+.^|body
 ^.^|X
-|Rules to apply to incoming request
-^.^|List of rules
+|The data to push as content of the request or response body.
+^.^|string
 ^.^|-
 
 |===
@@ -56,19 +82,9 @@ By default, if one of the rule can not be validated, the policy returns a `400` 
 [source, json]
 .Sample
 ----
-"policy-request-validation": {
-    "rules": [
-        {
-            "constraint": {
-                "parameters": [
-                    ".*\\\\.(txt)$"
-                ],
-                "type": "PATTERN"
-            },
-            "input": "{#request.pathInfos[2]}"
-        }
-    ],
-    "status": "400"
+"policy-assign-content": {
+    "scope":"REQUEST",
+    "body":"Put your content here"
 }
 ----
 
@@ -77,7 +93,7 @@ By default, if one of the rule can not be validated, the policy returns a `400` 
 |===
 |Code |Message
 
-.^| ```400```
-| Incoming HTTP request can not be validated.
+.^| ```500```
+| The body content can not be transformed.
 
 |===
