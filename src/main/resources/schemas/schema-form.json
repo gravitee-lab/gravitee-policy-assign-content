@@ -1,0 +1,33 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:io:gravitee:policy:assigncontent:configuration:AssignContentPolicyConfiguration",
+  "properties" : {
+    "scope" : {
+      "title": "Scope",
+      "description": "Execute policy on <strong>request</strong> or <strong>response</strong> phase.",
+      "type" : "string",
+      "default": "REQUEST",
+      "enum" : [ "REQUEST", "RESPONSE" ]
+    },
+    "body" : {
+      "title": "Body content",
+      "description": "The body content to attach to the request or to the response. You can also make use of freemarker templating engine to map an incoming body content to a new one.",
+      "type" : "string",
+      "x-schema-form": {
+        "type": "codemirror",
+        "codemirrorOptions": {
+          "placeholder": "Put the body content here",
+          "lineWrapping": true,
+          "lineNumbers": true,
+          "allowDropFileTypes": true,
+          "autoCloseTags": true,
+          "mode": "xml"
+        }
+      }
+    }
+  },
+  "required": [
+    "scope",
+    "body"
+  ]
+}
