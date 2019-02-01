@@ -25,6 +25,20 @@ The `assign content` policy is used to change and / or transform the content of 
 This policy is compatible with https://freemarker.apache.org[Freemarker] template engine which allows you to apply
 complex transformation like moving from XML to JSON and vice-versa.
 
+By default, you can access multiple object from the template context: request or response body, dictionaries, context
+attributes, ...
+
+[source, json]
+.Inject a dictionary value and the application into the request payload
+----
+{
+  "example": "${context.dictionaries['my-dictionary']['my-value']}",
+  "application": "${context.attributes['application']}"
+}
+----
+
+If you're looking for default attributes, you can have a look to expression language documentation: https://docs.gravitee.io/apim_publisherguide_expression_language.html#attributes
+
 [source, json]
 .Incoming request body content
 ----

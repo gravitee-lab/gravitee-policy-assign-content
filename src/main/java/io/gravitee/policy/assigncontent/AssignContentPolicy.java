@@ -32,6 +32,7 @@ import io.gravitee.policy.api.annotations.OnRequestContent;
 import io.gravitee.policy.api.annotations.OnResponseContent;
 import io.gravitee.policy.assigncontent.configuration.AssignContentPolicyConfiguration;
 import io.gravitee.policy.assigncontent.configuration.PolicyScope;
+import io.gravitee.policy.assigncontent.utils.AttributesBasedExecutionContext;
 import io.gravitee.policy.assigncontent.utils.ContentAwareRequest;
 import io.gravitee.policy.assigncontent.utils.ContentAwareResponse;
 import io.gravitee.policy.assigncontent.utils.Sha1;
@@ -72,7 +73,7 @@ public class AssignContentPolicy {
                                     StringWriter writer = new StringWriter();
                                     Map<String, Object> model = new HashMap<>();
                                     model.put("request", new ContentAwareRequest(request, buffer.toString()));
-                                    model.put("context", executionContext);
+                                    model.put("context", new AttributesBasedExecutionContext(executionContext));
                                     template.process(model, writer);
                                     return Buffer.buffer(writer.toString());
                                 } catch (Exception ioe) {
@@ -98,7 +99,7 @@ public class AssignContentPolicy {
                                 StringWriter writer = new StringWriter();
                                 Map<String, Object> model = new HashMap<>();
                                 model.put("response", new ContentAwareResponse(response, buffer.toString()));
-                                model.put("context", executionContext);
+                                model.put("context", new AttributesBasedExecutionContext(executionContext));
                                 template.process(model, writer);
                                 return Buffer.buffer(writer.toString());
                             } catch (Exception ioe) {
