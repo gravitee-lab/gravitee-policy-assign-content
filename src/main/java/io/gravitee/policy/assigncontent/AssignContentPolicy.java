@@ -16,6 +16,7 @@
 package io.gravitee.policy.assigncontent;
 
 import freemarker.cache.StringTemplateLoader;
+import freemarker.core.TemplateClassResolver;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
@@ -115,6 +116,7 @@ public class AssignContentPolicy {
     private static Configuration loadConfiguration() {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_27);
         configuration.setDefaultEncoding(Charset.defaultCharset().name());
+        configuration.setNewBuiltinClassResolver(TemplateClassResolver.SAFER_RESOLVER);
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         configuration.setTemplateLoader(new StringTemplateLoader());
         return configuration;
