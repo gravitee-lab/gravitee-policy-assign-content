@@ -37,7 +37,7 @@
         <gravitee-gateway-api.version>1.15.0</gravitee-gateway-api.version>
         <gravitee-policy-api.version>1.5.0</gravitee-policy-api.version>
 
-        <freemarker.version>2.3.27-incubating</freemarker.version>
+        <freemarker.version>2.3.30</freemarker.version>
         <maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
     </properties>
 
